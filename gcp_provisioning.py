@@ -70,7 +70,7 @@ def create_project_id(name, environment):
     alphanumeric = True
     if not prefix[0].isalpha():
         print("Error: The Project Name must begin with a letter")
-        exit(1)
+        exit(3)
     else:
         for letter in prefix:
             if not (letter.isalnum() or letter.isspace() or letter == "-"):
@@ -78,7 +78,7 @@ def create_project_id(name, environment):
 
     if alphanumeric == False:
         print("Error: The provided Project Name must contain only letters, numbers, spaces, or hyphens")
-        exit(1)
+        exit(4)
 
     prefix = prefix.replace(" ", "-")
     unique = ""
