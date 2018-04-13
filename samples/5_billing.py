@@ -11,8 +11,8 @@ from pprint import pprint
 from os import environ
 
 #Variables
-billing_account_id = '01BC14-B7E869-35B603' #GCP Billing Account ID that project will be linked to
-SERVICE_ACCOUNT_JSON_FILE_PATH = '/home/pi/scripts/key.json' #Path to the SErvice Account's Private Key file
+billing_account_id = '' #GCP Billing Account ID that project will be linked to
+SERVICE_ACCOUNT_JSON_FILE_PATH = '' #Path to the SErvice Account's Private Key file
 
 #Arguments
 parser = argparse.ArgumentParser(description='Links newly created GCP project to billing account')

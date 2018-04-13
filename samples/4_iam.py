@@ -19,8 +19,8 @@ args = parser.parse_args()
 #Project Lifecycle
 
 #Hardcoded variables
-org_id = '852670763926'
-service_account = 'project-maker@tsam184-198604.iam.gserviceaccount.com'
+org_id = ''
+service_account = ''
 
 #TEST
 project_name = "Label Test"

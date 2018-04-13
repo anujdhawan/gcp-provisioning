@@ -11,9 +11,9 @@ from os import environ #TEMPORARILY SETTING AUTHORIZATION LOCATION
 from pprint import pprint #FOR TESTING. REMOVE FROM FINAL VERSION
 
 #Variables
-org_id = '852670763926'
-service_account = 'project-maker@tsam184-198604.iam.gserviceaccount.com'
-SERVICE_ACCOUNT_JSON_FILE_PATH = '/home/pi/scripts/key.json'
+org_id = ''
+service_account = ''
+SERVICE_ACCOUNT_JSON_FILE_PATH = ''
 
 #Arguments
 parser = argparse.ArgumentParser(description='Creates GCP project')
