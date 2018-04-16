@@ -7,9 +7,9 @@ from googleapiclient import errors
 import argparse
 
 #Variables
-admin_email = 'travissamuel@tsam184.com' #Google Admin Console User email
-SERVICE_ACCOUNT_EMAIL = 'project-maker@tsam184-198604.iam.gserviceaccount.com' #Email of the Service Account
-SERVICE_ACCOUNT_JSON_FILE_PATH = '/home/pi/scripts/key.json' #Path to the Service Account's Private Key file
+admin_email = '' #Google Admin Console User email
+SERVICE_ACCOUNT_EMAIL = '' #Email of the Service Account
+SERVICE_ACCOUNT_JSON_FILE_PATH = '' #Path to the Service Account's Private Key file
 
 #Arguments
 parser = argparse.ArgumentParser(description='Checks if user has Cloud Identity')
