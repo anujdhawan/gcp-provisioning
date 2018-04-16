@@ -9,35 +9,38 @@ from random import choice
 from sys import exit
 from time import sleep
 from os import environ
-from pprint import pprint #FOR TESTING. REMOVE FROM FINAL VERSION
 
 
-#Client-specific variables. Update these values with those that apply to your organization
-
+#Variables
 org_id = 'XXXXXXXXXXXX' #12-digit GCP organization ID number (string)
 service_account = 'XXXX@[project name].gserviceaccount.com' #ID of service account (email address)
 service_account_json_path = '/home/pi/scripts/key.json' #Local path to service account's JSON key
 admin_email='XXXX@XX.com' #Email address of Google Admin Console Super Admin
 billing_account_id = 'XXXXXX-XXXXXX-XXXXXX' #18-character org billing id
 
-#Parser arguments. In addition to these, 2 separate lists containing users and groups (elements of lists are strings) that will be granted project ownership will be added
+#Arguments
 parser = argparse.ArgumentParser(description='Provision new GCP Project')
 parser.add_argument('project_name', type=str, help='Name of project')
 parser.add_argument('lifecycle', type=str, help='Lifecycle or environment of project')
-parser.add_argument('requester_email', type=str, help='Email of requester')
-parser.add_argument('department', type=str, help='Department Code')
+parser.add_argument('userlist', type=str, help='List of users to grant project ownership')
+parser.add_argument('-g', '--grouplist', type=str, help='Optional list of groups to grant project ownership')
+parser.add_argument('department_code', type=str, help='Department Code')
 args = parser.parse_args()
 
 #Parser variables
-user = args.requester_email
+userlist = args.userlist
+grouplist = args.grouplist
 project_name = args.project_name
 lifecycle = args.lifecycle.lower()
-dept_num = args.department
+dept_num = args.department_code
 
 #Set environment variable to use JSON file for service account authorization
 environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_path
 
-#1. CONFIRM THAT USER HAS CLOUD IDENTITY. IF NOT, EXIT PROGRAM.
+
+
+#1. CONFIRM THAT USERS (AND OPTIONALLY GROUPS) HAVE A CLOUD IDENTITY. IF NOT, EXIT PROGRAM.
+
 def create_directory_service(user_email):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
         service_account_json_path,
@@ -46,16 +49,73 @@ def create_directory_service(user_email):
     credentials = credentials.create_delegated(user_email)
     return discovery.build('admin', 'directory_v1', credentials=credentials)
 
+def create_email_list(emails):
+    email_list = []
+    username = ''
+
+    for character in emails:
+        if character.isalnum() or character == '@' or character == '.':
+            username = username + character
+        elif character == ',' or character == ']':
+            email_list.append(username)
+            username = ''
+    return email_list
+
+users = create_email_list(userlist)
+if grouplist:
+    groups = create_email_list(grouplist)
+existing_users = []
+non_existent_users = []
+existing_groups = []
+non_existent_groups = []
+
+
 identity_service = create_directory_service(admin_email)
 
-identity_request = identity_service.users().get(userKey=user)
-try:
-    identity_response = identity_request.execute()
-except errors.HttpError:
-    print("Error: User does not exist in Cloud Identity")
+
+for user in users:
+    try:
+        user_request = identity_service.users().get(userKey=user)
+        user_response = user_request.execute()
+    except errors.HttpError:
+        non_existent_users.append(user)
+    else:
+        existing_users.append(user)
+
+if non_existent_users != []:
+    print('The following users do not exist in Cloud Identity:')
+    for user in non_existent_users:
+        print(user)
+
+if grouplist:
+    for group in groups:
+        try:
+            group_request = identity_service.groups().get(groupKey=group)
+            group_response = group_request.execute()
+        except errors.HttpError:
+            non_existent_groups.append(group)
+        else:
+            existing_groups.append(group)
+
+if non_existent_groups != []:
+    print('The following groups do not exist in Cloud Identity:')
+    for group in non_existent_groups:
+        print(group)
+
+proceed = True
+if grouplist:
+    if existing_users == [] and existing_groups == []:
+        proceed = False
+elif existing_users == []:
+    proceed = False
+
+if proceed == False:
+    print("Error: No valid Users or Groups exist in Cloud Identity. Canceling request.")
     exit(1)
 else:
-    pprint(identity_response)
+    print("User and group check complete. Continuing.")
+
+
 
 
 
@@ -100,7 +160,10 @@ def create_project_id(name, environment):
 project_id = create_project_id(project_name, lifecycle)
 
 
-#3. CODE TO PROVISION THE ACCOUNT
+
+
+
+#3. PROVISION GCP PROJECT
 credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudresourcemanager', 'v1', credentials=credentials)
 
@@ -117,7 +180,8 @@ project_body = {
         }
 }
 
-while True:
+count = 10
+while count > 0:
     try:
         project_request = service.projects().create(body=project_body)
         project_response = project_request.execute()
@@ -126,20 +190,23 @@ while True:
         project_id = create_project_id(project_name, lifecycle)
         project_body['projectId'] = project_id
         print("Retrying with Project ID: %s" % project_body['projectId'])
+        count = count - 1
+        if count == 0:
+            print("Unknown http error: Please troubleshoot the project creation loop.")
+            exit(5)
     else:
-        pprint(project_request)
-        pprint(project_response)
         break
+
+print("Project has been provisioned. Assigning user permissions...")
+
+
+
 
 
 #4. SET IAM PERMISSIONS
 service_account_string = 'serviceAccount:'
 user_string = 'user:'
 group_string = 'group:'
-
-#HARDCODED FOR DEMO END TO END TEST. OBTAIN THROUGH PARSER IN FINAL VERSION
-emails = ['user1@fake.com', 'user2@fake.com']
-groups = ['group@fake.com']
 
 iam_body = {
         'policy': {
@@ -153,22 +220,31 @@ iam_body = {
             }
         }
 
-for name in emails:
-    (iam_body['policy']['bindings'][0]['members']).append(user_string+name)
-for set in groups:
-    (iam_body['policy']['bindings'][0]['members']).append(group_string+set)
+if existing_users != []:
+    for user in existing_users:
+        (iam_body['policy']['bindings'][0]['members']).append(user_string+user)
+
+if grouplist:
+    if existing_groups != []:
+        for group in existing_groups:
+            (iam_body['policy']['bindings'][0]['members']).append(group_string+group)
 
 iam_request = service.projects().setIamPolicy(resource=project_id, body=iam_body)
 
+
 #Assign IAM permissions after project has been created
-while True:
+count = 15
+while count > 0:
     try:
         iam_response = iam_request.execute()
     except:
         sleep(2)
     else:
-        pprint(iam_response)
         break
+
+print("Project ownership has been granted. Linking billing account...")
+
+
 
 
 
@@ -183,5 +259,4 @@ billing_body = {
 billing_service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 billing_request = billing_service.projects().updateBillingInfo(name=billing_name, body=billing_body)
 billing_response = billing_request.execute()
-pprint(billing_request)
-pprint(billing_response)
+print("Billing account has been linked. Project %s is now ready for use." % project_id)
