@@ -42,7 +42,6 @@ def create_email_list(emails):
             username = username + character
         elif character == ',' or character == ']':
             email_list.append(username)
-        elif character == ' ':
             username = ''
     return email_list
 
