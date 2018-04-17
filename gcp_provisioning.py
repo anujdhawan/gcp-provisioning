@@ -13,8 +13,7 @@ from os import environ
 
 #Variables
 org_id = 'XXXXXXXXXXXX' #12-digit GCP organization ID number (string)
-service_account = 'XXXX@[project name].gserviceaccount.com' #ID of service account (email address)
-service_account_json_path = '/home/pi/scripts/key.json' #Local path to service account's JSON key
+service_account_json_file_path = '/home/pi/scripts/key.json' #Local path to service account's JSON key
 admin_email='XXXX@XX.com' #Email address of Google Admin Console Super Admin
 billing_account_id = 'XXXXXX-XXXXXX-XXXXXX' #18-character org billing id
 
@@ -35,15 +34,14 @@ lifecycle = args.lifecycle.lower()
 dept_num = args.department_code
 
 #Set environment variable to use JSON file for service account authorization
-environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_path
-
+environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_file_path
 
 
 #1. CONFIRM THAT USERS (AND OPTIONALLY GROUPS) HAVE A CLOUD IDENTITY. IF NOT, EXIT PROGRAM.
 
 def create_directory_service(user_email):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        service_account_json_path,
+        service_account_json_file_path,
         scopes=['https://www.googleapis.com/auth/admin.directory.user',
                 'https://www.googleapis.com/auth/admin.directory.group'])
     credentials = credentials.create_delegated(user_email)
