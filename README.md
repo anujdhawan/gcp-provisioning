@@ -309,6 +309,7 @@ The completed script will check lists of users and groups, creates a project, ta
 
 ## Supplementary Scripts
 The **add_ons** folder of this project provides additional scripts to provide functionality that is not included in the primary gcp_provisioning.py script. These supplementary scripts allow a user to:
+
     * Check if an individual user exists in Cloud Identity
     * Check if an individual group exists in Cloud Identity
     * Provision a new user in Cloud Identity
@@ -365,6 +366,10 @@ The script will print a message indicating whether or not the group exists withi
       python check_group.py "groupname@fake.com"
 
 ### Provision New User
+This script can be used to provision a new user within your Organization's Google Admin Console.
+
+**WARNING:** If the requested user is a conflicting account, the script will automatically force the user to change the email address associated with their consumer account and does not provide the opportunity to migrate the existing account to your organization. Only use this script for brand new users or accounts for which you want to reclaim without migrating the associated data to your organization.
+
 #### Variables
 The following variables must be set within the user_provisioning.py file prior to runtime:
 
