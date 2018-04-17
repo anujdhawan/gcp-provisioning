@@ -6,14 +6,11 @@ from oauth2client.client import GoogleCredentials
 import argparse
 from random import choice
 from sys import exit
-from time import sleep
-from os import environ #TEMPORARILY SETTING AUTHORIZATION LOCATION
-from pprint import pprint #FOR TESTING. REMOVE FROM FINAL VERSION
+from os import environ
 
 #Variables
-org_id = ''
-service_account = ''
-SERVICE_ACCOUNT_JSON_FILE_PATH = ''
+org_id = '' #Your Organization's GCP ID Number
+service_account_json_file_path = '' #Local path to service account's JSON key file
 
 #Arguments
 parser = argparse.ArgumentParser(description='Creates GCP project')
@@ -27,7 +24,7 @@ lifecycle = "PROD"
 dept_num = "123456"
 
 #Sets environment variable for service account authorization
-environ['GOOGLE_APPLICATION_CREDENTIALS'] = SERVICE_ACCOUNT_JSON_FILE_PATH
+environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_file_path
 
 def create_project_id(name, environment):
     prefix = name.lower().strip().lstrip()
@@ -95,6 +92,5 @@ while count > 0:
         if count == 0:
             print("Unknown http error: Please comment out the except and else statements at the end of this script to troubleshoot")
     else:
-        pprint(project_request)
-        pprint(project_response)
+        print("Project: %s has been provisioned" % project_id)
         break

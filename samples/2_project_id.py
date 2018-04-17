@@ -1,14 +1,8 @@
 #!/bin/bash
 
-from googleapiclient import discovery
-from googleapiclient import errors
-from oauth2client.client import GoogleCredentials
 import argparse
 from random import choice
 from sys import exit
-from time import sleep
-from os import environ #TEMPORARILY SETTING AUTHORIZATION LOCATION
-from pprint import pprint #FOR TESTING. REMOVE FROM FINAL VERSION
 
 
 #Arguments

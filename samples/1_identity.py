@@ -2,14 +2,12 @@
 
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
-from pprint import pprint
 from googleapiclient import errors
 import argparse
 
 #Variables
 admin_email = '' #Google Admin Console User email
-SERVICE_ACCOUNT_EMAIL = '' #Email of the Service Account
-SERVICE_ACCOUNT_JSON_FILE_PATH = '' #Path to the Service Account's Private Key file
+service_account_json_file_path = '' #Path to the Service Account's Private Key file
 
 #Arguments
 parser = argparse.ArgumentParser(description='Checks if user has Cloud Identity')
@@ -22,7 +20,7 @@ grouplist = args.grouplist
 
 def create_directory_service(user_email):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        SERVICE_ACCOUNT_JSON_FILE_PATH,
+        service_account_json_file_path,
         scopes=['https://www.googleapis.com/auth/admin.directory.user',
                 'https://www.googleapis.com/auth/admin.directory.group'])
 

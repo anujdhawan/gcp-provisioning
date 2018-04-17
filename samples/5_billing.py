@@ -7,12 +7,11 @@
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 import argparse
-from pprint import pprint
 from os import environ
 
 #Variables
 billing_account_id = '' #GCP Billing Account ID that project will be linked to
-SERVICE_ACCOUNT_JSON_FILE_PATH = '' #Path to the SErvice Account's Private Key file
+service_account_json_file_path = '' #Path to the SErvice Account's Private Key file
 
 #Arguments
 parser = argparse.ArgumentParser(description='Links newly created GCP project to billing account')
@@ -23,7 +22,7 @@ project_id = args.project_id
 
 
 #Set environment variable for service account authorization
-environ['GOOGLE_APPLICATION_CREDENTIALS'] = SERVICE_ACCOUNT_JSON_FILE_PATH
+environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_file_path
 credentials = GoogleCredentials.get_application_default()
 service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
@@ -37,5 +36,4 @@ project_billing_info_body = {
         }
 request = service.projects().updateBillingInfo(name=name, body=project_billing_info_body)
 response = request.execute()
-pprint(request)
-pprint(response)
+print("Project: %s has been linked to Billing Account: %s" % (project_id, billing_account_id))

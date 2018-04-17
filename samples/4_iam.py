@@ -4,10 +4,9 @@ from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 import argparse
 from os import environ
-from pprint import pprint
 
 #Variables
-SERVICE_ACCOUNT_JSON_FILE_PATH = '/home/pi/scripts/key.json'
+service_account_json_file_path = ''
 
 #Arguments
 parser = argparse.ArgumentParser(description='Link billing account')
@@ -17,7 +16,7 @@ parser.add_argument('-g', '--grouplist', type=str, help='Email address of AD gro
 args = parser.parse_args()
 
 #Set environment variable for service account authorization
-environ['GOOGLE_APPLICATION_CREDENTIALS'] = SERVICE_ACCOUNT_JSON_FILE_PATH
+environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_file_path
 
 #The code below is utilized to provision the project
 credentials = GoogleCredentials.get_application_default()
@@ -43,6 +42,7 @@ def create_email_list(emails):
         elif character == ',' or character == ']':
             email_list.append(username)
             username = ''
+
     return email_list
 
 
@@ -76,4 +76,4 @@ if grouplist:
 
 iam_request = service.projects().setIamPolicy(resource=project_id, body=set_iam_policy_request_body)
 iam_response = iam_request.execute()
-pprint(iam_response)
+print("Project ownership has been granted to requested users and groups")

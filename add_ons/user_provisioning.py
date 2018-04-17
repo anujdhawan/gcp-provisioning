@@ -12,8 +12,7 @@ from random import choice
 
 
 #Variables
-SERVICE_ACCOUNT_EMAIL = 'XXXX@[project name].gserviceaccount.com' #ID of service account (email address)
-SERVICE_ACCOUNT_JSON_FILE_PATH = '' #Local path to service account's JSON key
+service_account_json_file_path = '' #Local path to service account's JSON key
 admin_email = 'XXXX@XX.com' #Email address of Google Admin Console Super Admin
 
 #Arguments
@@ -33,7 +32,7 @@ password = args.password
 
 def create_directory_service(user_email):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        SERVICE_ACCOUNT_JSON_FILE_PATH,
+        service_account_json_file_path,
         scopes=['https://www.googleapis.com/auth/admin.directory.user',
                 'https://www.googleapis.com/auth/admin.directory.group'])
 
@@ -49,7 +48,7 @@ if not password:
         password += choice("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'.")
 
 
-project_billing_info_body = {
+user_info_body = {
         "name": {
             "familyName": lastname,
             "givenName": firstname
@@ -61,6 +60,6 @@ project_billing_info_body = {
 
 
 service = create_directory_service(admin_email)
-request = service.users().insert(body=project_billing_info_body)
+request = service.users().insert(body=user_info_body)
 response = request.execute()
 print("User: %s has been created." % email)
