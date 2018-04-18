@@ -11,18 +11,6 @@ admin_email = '' #Google Admin Console User email
 service_account_json_file_path = '' #Path to the Service Account's Private Key file
 
 
-
-def create_directory_service(user_email):
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        service_account_json_file_path,
-        scopes=['https://www.googleapis.com/auth/admin.directory.user',
-                'https://www.googleapis.com/auth/admin.directory.group'])
-
-    credentials = credentials.create_delegated(user_email)
-
-    return build('admin', 'directory_v1', credentials=credentials)
-
-
 def create_email_list(emails):
     email_list = []
     username = ''
@@ -50,10 +38,16 @@ def main():
 
 
 
-def check_user_cloud_identity(email_list):
+def check_user_cloud_identity(email_list, admin_email, service_account_json_file_path):
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            service_account_json_file_path,
+            scopes=['https://www.googleapis.com/auth/admin.directory.user',
+                    'https://www.googleapis.com/auth/admin.directory.group'])
+
+    credentials = credentials.create_delegated(admin_email)
+    service = build('admin', 'directory_v1', credentials=credentials)
     existing_emails = []
     non_existing_emails = []
-    service = create_directory_service(admin_email)
 
     for user in email_list:
         try:
@@ -72,10 +66,17 @@ def check_user_cloud_identity(email_list):
     email_dictionary = {'existing': existing_emails, 'non_existent': non_existing_emails}
     return email_dictionary
 
-def check_group_cloud_identity(email_list):
+def check_group_cloud_identity(email_list, admin_email, service_account_json_file_path):
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            service_account_json_file_path,
+            scopes=['https://www.googleapis.com/auth/admin.directory.user',
+                    'https://www.googleapis.com/auth/admin.directory.group'])
+
+    credentials = credentials.create_delegated(admin_email)
+    service = build('admin', 'directory_v1', credentials=credentials)
+
     existing_emails = []
     non_existing_emails = []
-    service = create_directory_service(admin_email)
 
     for group in email_list:
         try:

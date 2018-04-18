@@ -16,10 +16,10 @@ import set_gcp_iam_permissions
 
 
 #Variables
-org_id = '' #12-digit GCP organization ID number (string)
-service_account_json_file_path = '' #Local path to service account's JSON key
-admin_email='' #Email address of Google Admin Console Super Admin
-billing_account_id = '' #18-character org billing id
+org_id = '852670763926' #12-digit GCP organization ID number (string)
+service_account_json_file_path = '/home/pi/scripts/key.json' #Local path to service account's JSON key
+admin_email='travissamuel@tsam184.com' #Email address of Google Admin Console Super Admin
+billing_account_id = '01BC14-B7E869-35B603' #18-character org billing id
 
 #Set environment variable to use JSON file for service account authorization
 environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_file_path
@@ -35,12 +35,12 @@ def main():
     args = vars(parser.parse_args())
 
     userlist = check_cloud_identity.create_email_list(args['user_list'])
-    users = check_cloud_identity.check_user_cloud_identity(userlist)
+    users = check_cloud_identity.check_user_cloud_identity(userlist, admin_email, service_account_json_file_path)
     if users['existing'] != []:
         iam_user_list = set_gcp_iam_permissions.setup_iam_user_list(users['existing'])
     if args['group_list']:
         grouplist = check_cloud_identity.create_email_list(args['group_list'])
-        groups = check_cloud_identity.check_group_cloud_identity(grouplist)
+        groups = check_cloud_identity.check_group_cloud_identity(grouplist, admin_email, service_account_json_file_path)
         if groups['existing'] != []:
             iam_group_list = set_gcp_iam_permissions.setup_iam_group_list(groups['existing'])
 
