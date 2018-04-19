@@ -1,0 +1,8 @@
+DEFAULT_MESSAGE = Error occured creating GCP project. Please, notify your IT Support.
+INVALID_PROJECT_NAME_LENGTH = The requested project name must be between 4 and 30 characters in length.
+PROJECT_NAME_STARTS_WITH_INVALID_CHARACTER = The requested project name must start with a letter.
+INVALID_CHARACTERS_IN_PROJECT_NAME = A project name must contain only letters, numbers, spaces, or hyphens.
+PROJECT_CREATION_FAIL = The creation of the GCP project has failed after 10 attempts. Troubleshoot the create_project function.
+EMPTY_USERS_AND_GROUPS = No member of the submitted list of users and groups do not exist in Cloud Identity. Create a Cloud Identity entry for at least 1 of the users and/or groups.
+EMPTY_USERS = No member of the submitted list of users do not exist in Cloud Identity. Create a Cloud Identity entry for at least 1 of the users.
+IAM_TIMEOUT = Attempts to assign ownership to the GCP project has timed out. The project has been provisioned; please manually assign ownership to requested users and/or groups.

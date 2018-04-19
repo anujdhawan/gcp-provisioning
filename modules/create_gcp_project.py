@@ -7,6 +7,9 @@ import argparse
 from random import choice
 from sys import exit
 from os import environ
+import logging
+
+logger = logging.getLogger(__name__)
 
 #Variables
 org_id = '' #Your Organization's GCP ID Number
@@ -25,22 +28,25 @@ def main():
 
 def create_project_id(name, environment):
     if len(name) < 4 or len(name) > 30:
-        print("Error: Project name must be between 4 and 30 characters")
-        exit(2)
+        logger.error('Project name must be between 4 and 30 characters')
+        raise Exception('INVALID_PROJECT_NAME_LENGTH')
+        exit(1)
 
     prefix = name.lower().strip().lstrip()
     alphanumeric = True
     if not prefix[0].isalpha():
-        print("Error: The Project Name must begin with a letter")
-        exit(1)
+        logger.error('The Project Name must begin with a letter')
+        raise Exception('PROJECT_NAME_STARTS_WITH_INVALID_CHARACTER')
+        exit(2)
     else:
         for letter in prefix:
             if not (letter.isalnum() or letter.isspace() or letter == "-"):
                 alphanumeric = False
 
     if alphanumeric == False:
-        print("Error: The provided Project Name must contain only letters, numbers, spaces, or hyphens")
-        exit(1)
+        logger.error('The provided Project Name must contain only letters, numbers, spaces, or hyphens')
+        raise Exception('INVALID_CHARACTERS_IN_PROJECT_NAME')
+        exit(3)
 
     prefix = prefix.replace(" ", "-")
     unique = ""
@@ -84,15 +90,16 @@ def create_project(project_name, project_id, org_id, dept_num, environment):
             project_request = service.projects().create(body=project_body)
             project_response = project_request.execute()
         except errors.HttpError:
-            print("This project ID is already in use. Trying again...")
+            logger.warning('The requested project ID is already in use. Trying again...')
             project_id = create_project_id(project_name, lifecycle)
             project_body['projectId'] = project_id
-            print("Retrying with Project ID: %s" % project_body['projectId'])
             count = count -1
             if count == 0:
-                print("Unknown http error: Please comment out the except and else statements at the end of this script to troubleshoot")
+                logger.error('Unknown http error. Please troubleshoot the create_project function')
+                raise Exception('PROJECT_CREATION_FAIL')
+                exit(4)
         else:
-            print("Project: %s has been provisioned" % project_id)
+            logger.info('Project: %s has been provisioned' % project_id)
             break
     return project_id
 

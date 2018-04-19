@@ -4,6 +4,9 @@ from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 import argparse
 from os import environ
+import logging
+
+logger = logging.getLogger(__name__)
 
 #Variables
 billing_account_id = '' #GCP Billing Account ID that project will be linked to
@@ -34,7 +37,7 @@ def link_billing(project_id, billing_account_id):
             }
     request = service.projects().updateBillingInfo(name=name, body=project_billing_info_body)
     response = request.execute()
-    print("Project: %s has been linked to Billing Account: %s" % (project_id, billing_account_id))
+    logger.info("Project: %s has been linked to Billing Account: %s" % (project_id, billing_account_id))
 
 if __name__ == "__main__":
     main()

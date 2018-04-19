@@ -5,8 +5,9 @@ from oauth2client.client import GoogleCredentials
 import argparse
 from os import environ
 import check_cloud_identity
+import logging
 
-
+logger = logging.getLogger(__name__)
 
 #Variables
 service_account_json_file_path = ''
@@ -78,7 +79,7 @@ def set_iam_policy(project_id, email_list):
 
     iam_request = service.projects().setIamPolicy(resource=project_id, body=set_iam_policy_request_body)
     iam_response = iam_request.execute()
-    print("Project ownership has been granted to requested users and groups")
+    logger.info('Project ownership has been granted to project: %s' % project_id)
 
 if __name__ == "__main__":
     main()

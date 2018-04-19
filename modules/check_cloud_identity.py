@@ -5,6 +5,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient import errors
 import argparse
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 #Variables
 admin_email = '' #Google Admin Console User email
@@ -55,13 +58,9 @@ def check_user_cloud_identity(email_list, admin_email, service_account_json_file
             response = request.execute()
         except errors.HttpError:
             non_existing_emails.append(user)
+            logger.warning('User: %s does not exist in Cloud Identity.' % user)
         else:
             existing_emails.append(user)
-
-    if non_existing_emails != []:
-        print('The following users do not exist in Cloud Identity:')
-        for email in non_existing_emails:
-            print(email)
 
     email_dictionary = {'existing': existing_emails, 'non_existent': non_existing_emails}
     return email_dictionary
@@ -84,13 +83,9 @@ def check_group_cloud_identity(email_list, admin_email, service_account_json_fil
             response = request.execute()
         except errors.HttpError:
             non_existing_emails.append(group)
+            logger.warning('Group: %s does not exist in Cloud Identity' % group)
         else:
             existing_emails.append(group)
-
-    if non_existing_emails != []:
-        print('The following groups do not exist in Cloud Identity:')
-        for email in non_existing_emails:
-            print(email)
 
         email_dictionary = {'existing': existing_emails, 'non_existing': non_existing_emails}
         return email_dictionary
