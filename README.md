@@ -25,10 +25,9 @@ Table of Contents
   * [Using the Project Scripts](#using-the-project-scripts)
     * [Modules](#modules)
       * [Cloud Identity Check](#1-cloud-identity-check)
-      * [Project ID Creation](#2-project-id-creation)
-      * [Project Provisioning](#3-project-provisioning)
-      * [Setting IAM Permissions](#4-setting-iam-permissions)
-      * [Link Billing Account](#5-link-billing-account)
+      * [Project Provisioning](#2-project-provisioning)
+      * [Setting IAM Permissions](#3-setting-iam-permissions)
+      * [Link Billing Account](#4-link-billing-account)
     * [Using the Main Script](#using-the-main-script)
     * [Logging](#logging)
     * [Supplementary Scripts](#supplementary-scripts)
@@ -127,19 +126,16 @@ If you have any issues installing the client or do not want to use PIP, you can 
 To aid users in understanding the capabilities of this project, the individual capabilities have been separated and placed in separate scripts. Information on each capability is listed below.
 
 #### 1. Cloud Identity Check
-This module iterates through provided lists of users and groups to ensure that they are valid users/groups within the Organization's Cloud Identity.
+This module iterates through provided lists of users and groups to ensure that they are valid users/groups within the Organization's Cloud Identity. This functionality is held in the check_cloud_identity.py script.
 
-#### 2. Project ID Creation
-This script takes a  project name and lifecycle/environment and creates a corresponding unique project ID which conforms to GCP's naming standards.
+#### 2. Project Provisioning
+This script takes a  project name and lifecycle/environment and creates a corresponding unique project ID which conforms to GCP's naming standards. It then creates the GCP project once it has been confirmed that at least one user or group in the provided lists exists with Cloud Identity. This functionality is held in the create_gcp_project.py script.
 
-#### 3. Project Provisioning
-This script provisions the GCP project once it has been confirmed that at least one user or group in the provided lists exists within Cloud Identity.
+#### 3. Setting IAM Permissions
+This script will grant project ownership to a defined project ID to the provided users and/or groups once the GCP project has been provisioned. This functionality is held in the set_gcp_iam_permissions.py script.
 
-#### 4. Setting IAM Permissions
-This script will grant project ownership to a defined project ID to the provided users and/or groups once the GCP project has been provisioned.
-
-#### 5. Link Billing Account
-This script links the newly provisioned GCP project to a defined billing account.
+#### 4. Link Billing Account
+This script links the newly provisioned GCP project to a defined billing account. The functionality is held in the link_billing_account.py script.
 
 
 ### Using the Main Script
@@ -192,9 +188,9 @@ The **add_ons** folder of this project will provide additional scripts to provid
 #### Provision New User
 This script can be used to provision a new user within your Organization's Google Admin Console.
 
-**WARNING:** If the requested user is a conflicting account, the script will     automatically force the user to change the email address associated with th    eir consumer account and does not provide the opportunity to migrate the exi    sting account to your organization. Only use this script for brand new users     or accounts for which you want to reclaim without migrating the associated     data to your organization.
+**WARNING:** If the requested user is a conflicting account, the script will automatically force the user to change the email address associated with their consumer account and does not provide the opportunity to migrate the existing account to your organization. Only use this script for brand new users or accounts for which you want to reclaim without migrating the associated     data to your organization.
 #### Variables
-The following variables must be set within the user_provisioning.py file prior to runtime:
+The following variables must be set within the provision_user.py file prior to runtime:
 
 * **admin_email -** This is the email address of a user within your domain that has the ability to view/list users and groups within the Google Admin Console for your organization. Your Service Account acts as this user to verify the user/group information.
 
@@ -203,9 +199,9 @@ The following variables must be set within the user_provisioning.py file prior t
 #### Arguments
 The following arguments must be provided when calling the script:
 
-* **firstname -** First name of the user that you would like to provision.
+* **first_name -** First name of the user that you would like to provision.
 
-* **lastname -** Last name of the user that you would like to provision.
+* **last_name -** Last name of the user that you would like to provision.
 
 * **email -** Email address of the user that you would like to provision.
 
@@ -220,6 +216,6 @@ Once the variables are set, run the script by issuing the following command:
 A user will be provisioned in your Organization's Cloud Identity. The script will print a confirmation message once the user is successfully provisioned.
 
 #### Examples
-      python user_provisioning.py --firstname "John" --lastname "Doe" --email "johndoe@fake.com"
-      python user_provisioning.py --firstname "Jane" --lastname "Doe" --email "janedoe@fake.com" --password "1l1k3appl35"
+      python provision_user.py --first_name "John" --last_name "Doe" --email "johndoe@fake.com"
+      python provision_user.py --first_name "Jane" --last_name "Doe" --email "janedoe@fake.com" --password "1l1k3appl35"
 

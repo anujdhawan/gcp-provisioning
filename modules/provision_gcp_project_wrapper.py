@@ -19,10 +19,10 @@ import logging.config
 
 
 #Variables
-org_id = '852670763926' #12-digit GCP organization ID number (string)
-service_account_json_file_path = '/home/pi/scripts/key.json' #Local path to service account's JSON key
-admin_email='travissamuel@tsam184.com' #Email address of Google Admin Console Super Admin
-billing_account_id = '01BC14-B7E869-35B603' #18-character org billing id
+org_id = '' #12-digit GCP organization ID number (string)
+service_account_json_file_path = '' #Local path to service account's JSON key
+admin_email='' #Email address of Google Admin Console Super Admin
+billing_account_id = '' #18-character org billing id
 
 #Set environment variable to use JSON file for service account authorization
 environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_file_path
