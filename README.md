@@ -175,7 +175,7 @@ The completed script will check lists of users and groups, creates a project, ta
 #### Examples
 
      python provision_gcp_project_wrapper.py --project_name "My Project" --lifecycle "Dev" --user_list "[user1@fake.com]"  --department_code "123456"
-     python provision_gcp_project_wrapper.py --project_name "eCommerce Site" --lifecycle "Prod" --uesr_list "[user1@fake.com, user2@fake.com]" --grouplist "[group@fake.com]" --department_code "234242"
+     python provision_gcp_project_wrapper.py --project_name "eCommerce Site" --lifecycle "Prod" --user_list "[user1@fake.com, user2@fake.com]" --group_list "[group@fake.com]" --department_code "234242"
 
 ### Logging
 The scripts log various events as they run. The debug.log, info.log, and errors.log files will be generated after the first run of the scripts. Please check these files for information on your script runs.
