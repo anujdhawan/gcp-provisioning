@@ -167,7 +167,7 @@ The following arguments must be provided when calling the script:
 #### Usage
 Once the variables are set, run the script by issuing the following command:
 
-      python provision_gcp_project_wrapper.py "project_name" "lifecycle" "[user_list]"  "[group_list]" "department_code"
+      python provision_gcp_project_wrapper.py --project_name  "Values" --lifecycle "Values"  --user_list "[Values]"  --group_list "[Values]" --department_code "Values"
 
 #### Expected Output
 The completed script will check lists of users and groups, creates a project, tags the project with labels for the lifecylce and department code, grants the users and groups ownership of the project, and links the project to a billing account. Upon successful completion, the script will return a message indicating that the project has been provisioned and will provide the project ID. If no message is returned, please check the logs to see what error has occured.
