@@ -175,7 +175,7 @@ The completed script will check lists of users and groups, creates a project, ta
 #### Examples
 
      python provision_gcp_project_wrapper.py --project_name "My Project" --lifecycle "Dev" --user_list "[user1@fake.com]"  --department_code "123456"
-     python provision.py --project_name "eCommerce Site" --lifecycle "Prod" --uesr_list "[user1@fake.com, user2@fake.com]" --grouplist "[group@fake.com]" --department_code "234242"
+     python provision_gcp_project_wrapper.py --project_name "eCommerce Site" --lifecycle "Prod" --uesr_list "[user1@fake.com, user2@fake.com]" --grouplist "[group@fake.com]" --department_code "234242"
 
 ### Logging
 The scripts log various events as they run. The debug.log, info.log, and errors.log files will be generated after the first run of the scripts. Please check these files for information on your script runs.
@@ -210,7 +210,7 @@ The following arguments must be provided when calling the script:
 #### Usage
 Once the variables are set, run the script by issuing the following command:
 
-      python user_provisioning.py "firstname" "lastname" "email"  "password"
+      python provision_user.py "firstname" "lastname" "email"  "password"
 
 #### Expected Output
 A user will be provisioned in your Organization's Cloud Identity. The script will print a confirmation message once the user is successfully provisioned.
