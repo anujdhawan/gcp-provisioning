@@ -19,10 +19,10 @@ import logging.config
 
 
 #Variables
-org_id = '' #12-digit GCP organization ID number (string)
-service_account_json_file_path = '' #Local path to service account's JSON key
-admin_email='' #Email address of Google Admin Console Super Admin
-billing_account_id = '' #18-character org billing id
+org_id = '852670763926' #12-digit GCP organization ID number (string)
+service_account_json_file_path = '/home/pi/scripts/key.json' #Local path to service account's JSON key
+admin_email='travissamuel@tsam184.com' #Email address of Google Admin Console Super Admin
+billing_account_id = '01BC14-B7E869-35B603' #18-character org billing id
 
 #Set environment variable to use JSON file for service account authorization
 environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_json_file_path
@@ -40,7 +40,7 @@ def errorParser(errorCode):
             else:
                 errorReason = myvars["DEFAULT_MESSAGE"]
     except Exception as ex:
-        return {'ReturnCode': 'Error' , 'ErrorMessage' : "Error Creating AWS account"}
+        return {'ReturnCode': 'Error' , 'ErrorMessage' : "Error Creating GCP project"}
     return errorReason
 
 
@@ -60,14 +60,34 @@ def main():
 
     logger = logging.getLogger(__name__)
 
+    logger.info('Starting GCP project creation process...')
 
     userlist = check_cloud_identity.create_email_list(args['user_list'])
     users = check_cloud_identity.check_user_cloud_identity(userlist, admin_email, service_account_json_file_path)
+    iam_user_list = []
     if users['existing'] != []:
         iam_user_list = set_gcp_iam_permissions.setup_iam_user_list(users['existing'])
     if args['group_list']:
         grouplist = check_cloud_identity.create_email_list(args['group_list'])
         groups = check_cloud_identity.check_group_cloud_identity(grouplist, admin_email, service_account_json_file_path)
+        if groups['non_existing'] != []:
+            for group in groups['non_existing']:
+                try:
+                    new_groups = check_cloud_identity.create_group(group, admin_email, service_account_json_file_path)
+                except Exception as ex:
+                    logger.error(ex.args, exc_info=True)
+                    message = {'ReturnCode': 'Error', 'ErrorMessage': errorParser(''.join(ex.args))}
+                    return json.dumps(message)
+                else:
+                    sleep(5)
+                    try:
+                        assigned_users = check_cloud_identity.assign_users(group, users['existing'], admin_email, service_account_json_file_path)
+                        groups['existing'].append(group)
+                        print(groups['existing'])
+                    except Exception as ex:
+                        logger.error(ex.args, exc_info=True)
+                        message = {'ReturnCode': 'Error', 'ErrorMessage': errorParser(''.join(ex.args))}
+                        return json.dumps(message)
         if groups['existing'] != []:
             iam_group_list = set_gcp_iam_permissions.setup_iam_group_list(groups['existing'])
 
@@ -79,52 +99,54 @@ def main():
         return json.dumps(message)
 
     if args['group_list']:
-        if users['existing'] != [] and groups['existing'] != []:
-            provisioning_list = iam_user_list + iam_group_list
-        elif groups['existing'] != []:
-            provisioning_list = iam_group_list
-        elif users['existing'] != []:
-            provisioning_list = iam_user_list
-        elif users['existing'] != []:
-            provisioning_list = iam_user_list
-        elif users['existing'] == [] and groups['existing'] == []:
-            logger.error('Project creation request does not contain users or groups with valid Cloud Identities')
-            raise Exception('EMPTY_USERS_AND_GROUPS')
-            message = {'ReturnCode': 'Error' , 'ErrorMessage' : 'EMPTY_USERS_AND_GROUPS'}
+        try:
+            provisioning_list = check_cloud_identity.combine_lists(users['existing'], groups['existing'], iam_user_list, iam_group_list)
+        except Exception as ex:
+            logger.error(ex.args, exc_info=True)
+            message = {'ReturnCode': 'Error' , 'ErrorMessage' : errorParser(''.join(ex.args))}
             return json.dumps(message)
-            exit(5)
     else:
-        if users['existing'] != []:
-            provisioning_list = iam_user_list
-        else:
-            logger.error('Project creation request does not contain users with valid Cloud Identities')
-            raise Exception('EMPTY_USERS')
-            message = {'ReturnCode': 'Error' , 'ErrorMessage' : 'EMPTY_USERS'}
+        print("user group")
+        try:
+            provisioning_list = check_cloud_identity.single_list(users['existing'], iam_user_list)
+        except Exception as ex:
+            logger.error(ex.args, exc_info=True)
+            message = {'ReturnCode': 'Error' , 'ErrorMessage' : errorParser(''.join(ex.args))}
             return json.dumps(message)
-            exit(6)
 
 
+"""
     #Project creation script will return a new project ID in case the original one was already in use
     project_id = create_gcp_project.create_project(args['project_name'], project_id, org_id, args['department_code'], args['lifecycle'])
 
     count = 15
     while count > 0:
         try:
-            set_gcp_iam_permissions.set_iam_policy(project_id, provisioning_list)
+            iam_response = set_gcp_iam_permissions.set_iam_policy(project_id, provisioning_list)
             break
         except:
             sleep(3)
             count = count - 1
             if count == 0:
-                logger.error('Time out while attempting to grant ownership to proeject: %s' % project_id)
-                raise Exception('IAM_TIMEOUT')
-                message = {'ReturnCode': 'Error' , 'ErrorMessage' : 'IAM_TIMEOUT'}
-                return json.dumps(message)
-                exit(7)
+                try:
+                    logger.error('Time out while attempting to grant ownership to proeject: %s' % project_id)
+                    raise Exception('IAM_TIMEOUT')
+                except Exception as ex:
+                    logger.error(ex.args, exc_info=True)
+                    message = {'ReturnCode': 'Error' , 'ErrorMessage' : errorParser(''.join(ex.args))}
+                    return json.dumps(message)
 
-    link_billing_account.link_billing(project_id, billing_account_id)
+    try:
+        billing_account = link_billing_account.link_billing(project_id, billing_account_id)
+    except Exception as ex:
+        logger.error(ex.args, exc_info=True)
+        message = {'ReturnCode': 'Error' , 'ErrorMessage' : errorParser(''.join(ex.args))}
+        return json.dumps(message)
+
 
     print("Project: %s has been provisioned" % project_id)
+
+"""
 
 if __name__ == "__main__":
     main()

@@ -5,4 +5,6 @@ INVALID_CHARACTERS_IN_PROJECT_NAME = A project name must contain only letters, n
 PROJECT_CREATION_FAIL = The creation of the GCP project has failed after 10 attempts. Troubleshoot the create_project function.
 EMPTY_USERS_AND_GROUPS = No member of the submitted list of users and groups do not exist in Cloud Identity. Create a Cloud Identity entry for at least 1 of the users and/or groups.
 EMPTY_USERS = No member of the submitted list of users do not exist in Cloud Identity. Create a Cloud Identity entry for at least 1 of the users.
-IAM_TIMEOUT = Attempts to assign ownership to the GCP project has timed out. The project has been provisioned; please manually assign ownership to requested users and/or groups.
+IAM_TIMEOUT = Attempts to assign ownership to the GCP project has timed out. The project has been provisioned; please manually assign ownership to requested users and/or groups
+INVALID_USER_SYNTAX = The submitted user was not entered as an email address.
+INVALID_GROUP_SYNTAX = The submittied group name was not entered as an email address.
