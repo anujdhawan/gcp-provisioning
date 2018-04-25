@@ -115,7 +115,6 @@ def main():
             return json.dumps(message)
 
 
-"""
     #Project creation script will return a new project ID in case the original one was already in use
     project_id = create_gcp_project.create_project(args['project_name'], project_id, org_id, args['department_code'], args['lifecycle'])
 
@@ -146,7 +145,6 @@ def main():
 
     print("Project: %s has been provisioned" % project_id)
 
-"""
 
 if __name__ == "__main__":
     main()
