@@ -216,6 +216,6 @@ Once the variables are set, run the script by issuing the following command:
 The requested user(s) will be provisioned in your Organization's Cloud Identity. The script will print a confirmation message containing the users' email addresses and temporary passwords once the users are successfully provisioned. **NOTE:** If passwords were not specified, the confirmation will be the only way to get the temporary passwords. Please make note of these passwords and pass them to the new users. If you do not note the passwords, they can be manually reset within the Google Admin Console
 
 #### Examples
-      python provision_user.py --first_name [John] --last_name [Doe] --email [johndoe@fake.com] --password [1l1k3appl35]
-      python provision_user.py --first_name [Charles,Scott] --last_name [Xavier,Summers] --email [profx@fake.com,cyclops@fake.com]
+      python provision_user.py --first_name "[John]" --last_name "[Doe]" --email "[johndoe@fake.com]" --password "[1l1k3appl35]"
+      python provision_user.py --first_name "[Charles,Scott]" --last_name "[Xavier,Summers]" --email "[profx@fake.com,cyclops@fake.com]"
 
