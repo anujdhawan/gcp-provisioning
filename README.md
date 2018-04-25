@@ -199,13 +199,13 @@ The following variables must be set within the provision_user.py file prior to r
 #### Arguments
 The following arguments must be provided when calling the script:
 
-* **first_name -** List of first names of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" amd "]")
+* **first_name -** List of first names of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" and "]")
 
-* **last_name -** List of last names of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" amd "]")
+* **last_name -** List of last names of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" and "]")
 
-* **email -** List of email addresses of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" amd "]")
+* **email -** List of email addresses of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" and "]")
 
-* **password -** Optional entry for the password that you would like to provision. If the password is not specified, a random password will be generated.  Note that the list must be enclosed by brackets (i.e. "[" amd "]")
+* **password -** Optional entry for the password that you would like to provision. If the password is not specified, a random password will be generated.  Note that the list must be enclosed by brackets (i.e. "[" and "]")
 
 #### Usage
 Once the variables are set, run the script by issuing the following command:
