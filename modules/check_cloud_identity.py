@@ -19,7 +19,7 @@ def create_email_list(emails):
     username = ''
 
     for character in emails:
-        if character.isalnum() or character == '@' or character == '.':
+        if character.isalnum() or character == '@' or character == '.' or character == '-':
             username = username + character
         elif character == ',' or character == ']':
             email_list.append(username)
