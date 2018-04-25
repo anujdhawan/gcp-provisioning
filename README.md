@@ -186,7 +186,7 @@ The **add_ons** folder of this project will provide additional scripts to provid
 
 
 #### Provision New User
-This script can be used to provision a new user within your Organization's Google Admin Console.
+This script can be used to provision a new user within your Organization's Google Admin Console. The script has been designed to run independent of the main provision_gcp_project_wrapper.py file. If you choose to integrate this script with main script, logging can be enabled by uncommenting the appropriate lines in provision_user.py
 
 **WARNING:** If the requested user is a conflicting account, the script will automatically force the user to change the email address associated with their consumer account and does not provide the opportunity to migrate the existing account to your organization. Only use this script for brand new users or accounts for which you want to reclaim without migrating the associated     data to your organization.
 #### Variables
@@ -199,23 +199,23 @@ The following variables must be set within the provision_user.py file prior to r
 #### Arguments
 The following arguments must be provided when calling the script:
 
-* **first_name -** First name of the user that you would like to provision.
+* **first_name -** List of first names of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" amd "]")
 
-* **last_name -** Last name of the user that you would like to provision.
+* **last_name -** List of last names of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" amd "]")
 
-* **email -** Email address of the user that you would like to provision.
+* **email -** List of email addresses of the users that you would like to provision. Note that the list must be enclosed by brackets (i.e. "[" amd "]")
 
-* **password -** Optional entry for the password that you would like to provision. If the password is not specified, a random password will be generated.
+* **password -** Optional entry for the password that you would like to provision. If the password is not specified, a random password will be generated.  Note that the list must be enclosed by brackets (i.e. "[" amd "]")
 
 #### Usage
 Once the variables are set, run the script by issuing the following command:
 
-      python provision_user.py "firstname" "lastname" "email"  "password"
+      python provision_user.py --first_name "values" --last_name "values" --email "values"  --password "values"
 
 #### Expected Output
-A user will be provisioned in your Organization's Cloud Identity. The script will print a confirmation message once the user is successfully provisioned.
+The requested user(s) will be provisioned in your Organization's Cloud Identity. The script will print a confirmation message containing the users' email addresses and temporary passwords once the users are successfully provisioned. **NOTE:** If passwords were not specified, the confirmation will be the only way to get the temporary passwords. Please make note of these passwords and pass them to the new users. If you do not note the passwords, they can be manually reset within the Google Admin Console
 
 #### Examples
-      python provision_user.py --first_name "John" --last_name "Doe" --email "johndoe@fake.com"
-      python provision_user.py --first_name "Jane" --last_name "Doe" --email "janedoe@fake.com" --password "1l1k3appl35"
+      python provision_user.py --first_name [John] --last_name [Doe] --email [johndoe@fake.com] --password [1l1k3appl35]
+      python provision_user.py --first_name [Charles,Scott] --last_name [Xavier,Summers] --email [profx@fake.com,cyclops@fake.com]
 
