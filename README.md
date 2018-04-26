@@ -228,7 +228,7 @@ The following arguments must be provided when calling the script:
 #### Usage
 Once the variables are set, run the script by issuing the following command:
 
-      provision_user.py [-h] --first_name FIRST_NAME --last_name LAST_NAME --email EMAIL [--password PASSWORD]
+      python provision_user.py [-h] --first_name FIRST_NAME --last_name LAST_NAME --email EMAIL [--password PASSWORD]
 
 
 #### Expected Output
