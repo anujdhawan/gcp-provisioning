@@ -5,7 +5,6 @@ from googleapiclient import errors
 from oauth2client.client import GoogleCredentials
 import argparse
 from random import choice
-from sys import exit
 from os import environ
 import logging
 
@@ -30,14 +29,12 @@ def create_project_id(name, environment):
     if len(name) < 4 or len(name) > 30:
         logger.error('Project name must be between 4 and 30 characters')
         raise Exception('INVALID_PROJECT_NAME_LENGTH')
-        exit(1)
 
     prefix = name.lower().strip().lstrip()
     alphanumeric = True
     if not prefix[0].isalpha():
         logger.error('The Project Name must begin with a letter')
         raise Exception('PROJECT_NAME_STARTS_WITH_INVALID_CHARACTER')
-        exit(2)
     else:
         for letter in prefix:
             if not (letter.isalnum() or letter.isspace() or letter == "-"):
@@ -46,7 +43,6 @@ def create_project_id(name, environment):
     if alphanumeric == False:
         logger.error('The provided Project Name must contain only letters, numbers, spaces, or hyphens')
         raise Exception('INVALID_CHARACTERS_IN_PROJECT_NAME')
-        exit(3)
 
     prefix = prefix.replace(" ", "-")
     unique = ""
@@ -97,7 +93,6 @@ def create_project(project_name, project_id, org_id, dept_num, environment):
             if count == 0:
                 logger.error('Unknown http error. Please troubleshoot the create_project function')
                 raise Exception('PROJECT_CREATION_FAIL')
-                exit(4)
         else:
             logger.info('Project: %s has been provisioned' % project_id)
             break

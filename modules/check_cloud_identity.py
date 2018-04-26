@@ -163,7 +163,7 @@ def single_list(list_users, list_iam_users):
     else:
         logger.error('Project creation request does not contain users with valid Cloud Identities')
         raise Exception('EMPTY_USERS')
-
+    return answer
 
 
 if __name__ == "__main__":
