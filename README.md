@@ -7,6 +7,7 @@ The purpose of this project is to create Google Cloud Platform (GCP) projects un
 3. Creates the project under the defined Organization node.
 4. Grants project ownership to the validated lists of users and/or groups.
 5. Links the project to a defined Billing Account.
+6. Links the created project to an Orbitera account
 
 Table of Contents
 =================
@@ -22,6 +23,7 @@ Table of Contents
         * [Grant Admin Console Permissions to the Service Account](#grant-admin-console-permissions-to-the-service-account)
     * [Installing Python 2](#installing-python-2)
     * [Installing the Google API Python Client](#installing-the-google-api-python-client)
+    * [Installing Requests Package](#installing-requests-package)
   * [Using the Project Scripts](#using-the-project-scripts)
     * [Modules](#modules)
       * [Cloud Identity Check](#1-cloud-identity-check)
@@ -48,8 +50,9 @@ The following elements are required for this project to run:
     * Admin SDK API
 4. The user must have access to view Users and Groups within the Organization's Google Admin Console.
 5. The Google API Python Client must be installed on the hosting machine
-6. A service account must be provisioned in the "Admin" GCP project
-7. Access to a valid GCP Billing Account
+6. The Python Requests package must be installed on the hosting machine
+7. A service account must be provisioned in the "Admin" GCP project
+8. Access to a valid GCP Billing Account
 
 
 
@@ -120,6 +123,9 @@ Once PIP is installed, you can install the Google API Python Client by entering 
 
 If you have any issues installing the client or do not want to use PIP, you can find additional information on installation [here](https://developers.google.com/api-client-library/python/start/installation)
 
+### Installing Requests Package
+
+The Python Requests package will be required to make API calls to Orbitera. Information on installing the package can be found on the [Requests site](http://docs.python-requests.org/en/master/user/install/#install)
 
 ## Using the Project Scripts
 ### Modules
@@ -151,8 +157,20 @@ The following variables must be set within the provision_gcp_project_wrapper.py 
 
 * **billing_account_id -** The ID of the billing account that you will link to defined projects.
 
+* **API -** This is the API key from your Orbitera account
+
+* **API_S -** This is the secret key from your Orbitera account
+
+* **company -** This is your company's name. This will be set as the organization name when creating the Orbitera customer.
+
 #### Arguments
 The following arguments must be provided when calling the script:
+
+* **requester_first_name -** First name of the project requester. Used to create Orbitera customer. Must be entered as a string
+
+* **requester_last_name -** Last name of the project requester. Ussed to create Orbitera customer. Must be entered as a string
+
+* **requester_email -** Email address of the project requester. Used to create Orbitera customer. Must be entered as a string
 
 * **project_name -** The name of your GCP project. Must be entered as a string
 
@@ -167,15 +185,15 @@ The following arguments must be provided when calling the script:
 #### Usage
 Once the variables are set, run the script by issuing the following command:
 
-      python provision_gcp_project_wrapper.py --project_name  "Values" --lifecycle "Values"  --user_list "[Values]"  --group_list "[Values]" --department_code "Values"
+      python provision_gcp_project_wrapper.py [-h] --requester_first_name REQUESTER_FIRST_NAME --requester_last_name REQUESTER_LAST_NAME --requester_email REQUESTER    _EMAIL --project_name PROJECT_NAME --lifecycle LIFECYCLE --user_list USER_LIST [--group_list GROUP_LIST] --department_code DEPARTMENT_CODE
 
 #### Expected Output
 The completed script will check lists of users and groups, creates a project, tags the project with labels for the lifecylce and department code, grants the users and groups ownership of the project, and links the project to a billing account. Upon successful completion, the script will return a message indicating that the project has been provisioned and will provide the project ID. If no message is returned, please check the logs to see what error has occured.
 
 #### Examples
 
-     python provision_gcp_project_wrapper.py --project_name "My Project" --lifecycle "Dev" --user_list "[user1@fake.com]"  --department_code "123456"
-     python provision_gcp_project_wrapper.py --project_name "eCommerce Site" --lifecycle "Prod" --user_list "[user1@fake.com, user2@fake.com]" --group_list "[group@fake.com]" --department_code "234242"
+     python provision_gcp_project_wrapper.py --requester_first_name "John" --requester_last_name "Doe" --requester_email "john@fake.com" --project_name "My Project" --lifecycle "Dev" --user_list "[user1@fake.com]"  --department_code "123456"
+     python provision_gcp_project_wrapper.py --requester_first_name "Jane" --requester_last_name "Doe" --requester_email "jane@fake.com" --project_name "eCommerce Site" --lifecycle "Prod" --user_list "[user1@fake.com, user2@fake.com]" --group_list "[group@fake.com]" --department_code "234242"
 
 ### Logging
 The scripts log various events as they run. The debug.log, info.log, and errors.log files will be generated after the first run of the scripts. Please check these files for information on your script runs.
@@ -210,7 +228,8 @@ The following arguments must be provided when calling the script:
 #### Usage
 Once the variables are set, run the script by issuing the following command:
 
-      python provision_user.py --first_name "values" --last_name "values" --email "values"  --password "values"
+      provision_user.py [-h] --first_name FIRST_NAME --last_name LAST_NAME --email EMAIL [--password PASSWORD]
+
 
 #### Expected Output
 The requested user(s) will be provisioned in your Organization's Cloud Identity. The script will print a confirmation message containing the users' email addresses and temporary passwords once the users are successfully provisioned. **NOTE:** If passwords were not specified, the confirmation will be the only way to get the temporary passwords. Please make note of these passwords and pass them to the new users. If you do not note the passwords, they can be manually reset within the Google Admin Console
