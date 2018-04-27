@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env python
 
 from googleapiclient import discovery
 from googleapiclient import errors
@@ -51,7 +51,7 @@ def errorParser(errorCode):
 def main():
     parser = argparse.ArgumentParser(description='Provision new GCP Project')
     parser.add_argument('--requester_first_name', type=str, help='First name of the project requester', required=True)
-    parser.add_argument('--requester_last_name', type=str, help='Last name o    f the project requester', required=True)
+    parser.add_argument('--requester_last_name', type=str, help='Last name of the project requester', required=True)
     parser.add_argument('--requester_email', type=str, help='Email address of project requester', required=True)
     parser.add_argument('--project_name', type=str, help='Name of project', required=True)
     parser.add_argument('--lifecycle', type=str, help='Lifecycle or environment of project', required=True)
@@ -123,7 +123,12 @@ def main():
             return json.dumps(message)
 
     #Project creation script will return a new project ID in case the original one was already in use
-    project_id = create_gcp_project.create_project(args['project_name'], project_id, org_id, args['department_code'], args['lifecycle'])
+    try:
+        project_id = create_gcp_project.create_project(args['project_name'], project_id, org_id, args['department_code'], args['lifecycle'])
+    except Exception as ex:
+        logger.error(ex.args, exc_info=True)
+        message = {'ReturnCode': 'Error' , 'ErrorMessage' : errorParser(''.join(ex.args))}
+        return json.dumps(message)
 
     count = 15
     while count > 0:
@@ -150,7 +155,7 @@ def main():
         message = {'ReturnCode': 'Error' , 'ErrorMessage' : errorParser(''.join(ex.args))}
         return json.dumps(message)
 
-
+    """
     #Checks to see if customer exists in Orbitera. Creates customer if it doesn't exisst
     try:
         customer_id = link_orbitera.create_customer_record(args['requester_email'], args['requester_first_name'], args['requester_last_name'], company, API, API_S)
@@ -178,7 +183,7 @@ def main():
 
 
     print("Project: %s has been provisioned" % project_id)
-
+    """
 
 if __name__ == "__main__":
     main()

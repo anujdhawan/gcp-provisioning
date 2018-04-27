@@ -14,18 +14,15 @@ API_S = '' #Orbitera secret key
 company = '' #Company Name
 project_id = '' #ID of the GCP project to be linked to Orbitera
 
-#Arguments
-"""
-parser = argparse.ArgumentParser(description='Links project to Orbitera account')
-parser.add_argument('--first_name', type=str, help='First name of the Orbitera customer', required=True)
-parser.add_argument('--last_name', type=str, help='Last name of the Orbitera customer', required=True)
-parser.add_argument('--email', type=str, help='Email address of the Orbitera customer', required=True)
-args = parser.parse_args()
-"""
 
 logger = logging.getLogger(__name__)
 
 def main():
+    parser = argparse.ArgumentParser(description='Links project to Orbitera account')
+    parser.add_argument('--first_name', type=str, help='First name of the Orbitera customer', required=True)
+    parser.add_argument('--last_name', type=str, help='Last name of the Orbitera customer', required=True)
+    parser.add_argument('--email', type=str, help='Email address of the Orbitera customer', required=True)
+    args = parser.parse_args()
     customer_id = create_customer_record(args.email, args.first_name, args.last_name, company)
     orbitera_project_number = create_cloud_account(project_id, args.email)
     cloud_link = assign_cloud_account(orbitera_project_number, customer_id, args.email)

@@ -53,6 +53,7 @@ The following elements are required for this project to run:
 6. The Python Requests package must be installed on the hosting machine
 7. A service account must be provisioned in the "Admin" GCP project
 8. Access to a valid GCP Billing Account
+9. Access to an Orbitera account
 
 
 
@@ -143,6 +144,8 @@ This script will grant project ownership to a defined project ID to the provided
 #### 4. Link Billing Account
 This script links the newly provisioned GCP project to a defined billing account. The functionality is held in the link_billing_account.py script.
 
+#### 5. Link to Orbitera
+Orbitera is a cloud commerce platform that allows users to monitor their spending on various cloud service providers. This script confirms/creates a customer in Orbitera and links the GCP project to the customer.
 
 ### Using the Main Script
 The provision_gcp_project_wrapper.py script calls on the other scripts to provision your GCP project, grant ownership, and link it to a billing account.

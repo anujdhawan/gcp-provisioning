@@ -85,7 +85,8 @@ def create_project(project_name, project_id, org_id, dept_num, environment):
         try:
             project_request = service.projects().create(body=project_body)
             project_response = project_request.execute()
-        except errors.HttpError:
+        except:
+        #except errors.HttpError:
             logger.warning('The requested project ID is already in use. Trying again...')
             project_id = create_project_id(project_name, lifecycle)
             project_body['projectId'] = project_id
