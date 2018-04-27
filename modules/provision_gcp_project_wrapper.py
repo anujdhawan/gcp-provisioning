@@ -155,7 +155,7 @@ def main():
         message = {'ReturnCode': 'Error' , 'ErrorMessage' : errorParser(''.join(ex.args))}
         return json.dumps(message)
 
-    """
+
     #Checks to see if customer exists in Orbitera. Creates customer if it doesn't exisst
     try:
         customer_id = link_orbitera.create_customer_record(args['requester_email'], args['requester_first_name'], args['requester_last_name'], company, API, API_S)
@@ -183,7 +183,7 @@ def main():
 
 
     print("Project: %s has been provisioned" % project_id)
-    """
+
 
 if __name__ == "__main__":
     main()
