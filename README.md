@@ -30,6 +30,7 @@ Table of Contents
       * [Project Provisioning](#2-project-provisioning)
       * [Setting IAM Permissions](#3-setting-iam-permissions)
       * [Link Billing Account](#4-link-billing-account)
+      * [Link to Orbitera](#link-to-orbitera)
     * [Using the Main Script](#using-the-main-script)
     * [Logging](#logging)
     * [Supplementary Scripts](#supplementary-scripts)
