@@ -38,7 +38,7 @@ def create_customer_record(email_id, first_name, last_name, company, API, API_S)
             "company": company
     }
 
-    r = requests.get('https://orbitera.com/c2m/api/v1/customers/?[filter[email:exact]='+email_id, auth=HTTPBasicAuth(API,API_S))
+    r = requests.get('https://orbitera.com/c2m/api/v1/customers/?filter[email:exact]='+email_id, auth=HTTPBasicAuth(API,API_S))
     response_json = json.loads(r.content)
     if response_json['data']['total_count'] == '1':
         logger.info("Customer: %s already exists in Orbitera. Skipping customer creation..." % email_id)
